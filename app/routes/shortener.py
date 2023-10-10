@@ -7,12 +7,14 @@ shortener = blueprints.Blueprint("shortener", __name__)
 
 @shortener.route("/shorten", methods=["POST"])
 def shorten_url():
-    form = ShortenRequestForm(request.form)
+    form = ShortenRequestForm(data=request.get_json())
 
     if form.validate():
-        original_url = form.url.data
-        shorten_url = create_shortened_url(original_url)
-        return jsonify(shorten_url=shorten_url), 201
+        try:
+            shorten_url = create_shortened_url(form.data)
+            return jsonify(shorten_url=shorten_url), 201
+        except ValueError as e:
+            return jsonify(errors=str(e)), 400
     else:
         return jsonify(errors=form.errors), 400
 
