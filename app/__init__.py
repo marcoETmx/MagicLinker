@@ -1,7 +1,11 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from app.extensions import db
 
-app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite"
 
-db = SQLAlchemy(app)
+def create_app():
+    app = Flask(__name__)
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite"
+
+    db.init_app(app)
+
+    return app
