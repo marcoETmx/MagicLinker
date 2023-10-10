@@ -1,18 +1,20 @@
 from flask import jsonify, request, blueprints, redirect, abort
 from app.services.shorten_service import create_shortened_url, get_original_url
+from app.forms.forms import ShortenRequestForm
 
 shortener = blueprints.Blueprint("shortener", __name__)
 
 
 @shortener.route("/shorten", methods=["POST"])
 def shorten_url():
-    data = request.get_json()
-    original_url = data.get("url")
-    if not original_url:
-        return jsonify(message="URL is required"), 400
+    form = ShortenRequestForm(request.form)
 
-    shorten_url = create_shortened_url(original_url)
-    return jsonify(shorten_url=shorten_url), 201
+    if form.validate():
+        original_url = form.url.data
+        shorten_url = create_shortened_url(original_url)
+        return jsonify(shorten_url=shorten_url), 201
+    else:
+        return jsonify(errors=form.errors), 400
 
 
 @shortener.route("/<short_code>", methods=["GET"])
