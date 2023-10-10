@@ -1,7 +1,5 @@
 from flask import jsonify, request, blueprints, redirect, abort
-import shortuuid
-from app import db
-from app.models.url import URL
+from app.services.shorten_service import create_shortened_url, get_original_url
 
 shortener = blueprints.Blueprint("shortener", __name__)
 
@@ -13,18 +11,13 @@ def shorten_url():
     if not original_url:
         return jsonify(message="URL is required"), 400
 
-    shorten_url = shortuuid.uuid()[:6]
-    new_url = URL(original_url=original_url, shorten_code=shorten_url)
-    db.session.add(new_url)
-    db.session.commit()
-
+    shorten_url = create_shortened_url(original_url)
     return jsonify(shorten_url=shorten_url), 201
 
 
 @shortener.route("/<short_code>", methods=["GET"])
 def redirect_to_original(short_code: str):
-    url_entry = URL.query.filter_by(shorten_code=short_code).first()
-
+    url_entry = get_original_url(short_code)
     if url_entry:
         return redirect(url_entry.original_url)
     else:
