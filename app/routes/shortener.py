@@ -1,7 +1,8 @@
-from flask import jsonify, request, redirect, abort
-from flask_restx import Resource, Namespace, fields
-from app.services.shorten_service import create_shortened_url, get_original_url
+from flask import abort, redirect, request
+from flask_restx import Namespace, Resource, fields
+
 from app.forms.forms import ShortenRequestForm
+from app.services.shorten_service import create_shortened_url, get_original_url
 
 shortener_ns = Namespace(
     "shortener", description="Operaciones relacionadas con el acortamiento de URLs"
@@ -42,5 +43,5 @@ class RedirectResource(Resource):
         url_entry = get_original_url(short_code)
         if url_entry:
             return redirect(url_entry.original_url)
-        else:
-            abort(404, description="Shortened URL not found")
+
+        abort(404, description="Shortened URL not found")

@@ -1,4 +1,5 @@
 import shortuuid
+
 from app import db
 from app.models.url import URL
 
