@@ -8,3 +8,5 @@ flask-restx
 
 pylint
 black
+pytest
+pytest-flask 
