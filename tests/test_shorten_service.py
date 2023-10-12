@@ -6,6 +6,7 @@ from app.services.shorten_service import (
     create_shortened_url,
     get_all_urls,
     get_original_url,
+    get_url_by_short_code,
 )
 
 
@@ -86,3 +87,28 @@ def test_get_all_urls_function(client):
 
         # Expected
         assert len(urls) == 2
+
+
+def test_get_url_by_short_code_existing_code(client):
+    # Setup
+    with client.application.app_context():
+        original_url = "http://example.com"
+        shorten_code = "exmpl"
+        url = {"url": original_url, "short_code": shorten_code}
+        create_shortened_url(url)
+
+        # Action
+        result = get_url_by_short_code(shorten_code)
+
+        # Expected
+        assert result.original_url == original_url
+        assert result.shorten_code == shorten_code
+
+
+def test_get_url_by_short_code_non_existing_code(client):
+    with client.application.app_context():
+        # Action
+        result = get_url_by_short_code("nonexist")
+
+        # Expected
+        assert result is None

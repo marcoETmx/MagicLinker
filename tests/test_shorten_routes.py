@@ -109,3 +109,28 @@ def test_get_all_urls_returns_all_shortened_urls(client):
     assert len(data) == 2
     assert any(url["original_url"] == "http://example1.com" for url in data)
     assert any(url["original_url"] == "http://example2.com" for url in data)
+
+
+def test_get_url_detail_existing_code(client):
+    # Setup
+    original_url = "http://example.com"
+    shorten_code = "exmpl"
+    url = {"url": original_url, "short_code": shorten_code}
+    with client.application.app_context():
+        create_shortened_url(url)
+
+    # Action
+    response = client.get(f"/shortener/urls/{shorten_code}")
+
+    # Expected
+    assert response.status_code == 200
+    assert response.json["original_url"] == original_url
+    assert response.json["shorten_code"] == shorten_code
+
+
+def test_get_url_detail_non_existing_code(client):
+    # Action
+    response = client.get("/shortener/urls/nonexist")
+
+    # Expected
+    assert response.status_code == 404
