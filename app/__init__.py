@@ -2,18 +2,18 @@ from flask import Flask
 from flask_restx import Api
 
 from app.extensions import db
+from app.routes.root import root_ns
 from app.routes.shortener import shortener_ns
+from config import Config, TestConfig
 
-from config import TestConfig
 
-
-def create_app(config_name: str):
+def create_app(config_name: str = None):
     app = Flask(__name__)
 
     if config_name == "config.TestConfig":
         app.config.from_object(TestConfig)
     else:
-        app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite"
+        app.config.from_object(Config)
 
     api = Api(
         version="1.0",
@@ -21,8 +21,9 @@ def create_app(config_name: str):
         doc="/doc/",
         description="Documentación de la API de MagicLinker",
     )
+    api.add_namespace(root_ns, path="/")
+    api.add_namespace(shortener_ns, path="/shortener")
     api.init_app(app)
-    api.add_namespace(shortener_ns, path="/")
 
     db.init_app(app)
 

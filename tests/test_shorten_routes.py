@@ -23,7 +23,7 @@ def client():
 def test_post_shorten_valid_url_no_shortcode(client):
     # Action
     response = client.post(
-        "/shorten",
+        "/shortener/url",
         data=json.dumps({"url": "http://example.com"}),
         content_type="application/json",
     )
@@ -35,7 +35,7 @@ def test_post_shorten_valid_url_no_shortcode(client):
 def test_post_shorten_valid_url_with_shortcode(client):
     # Action
     response = client.post(
-        "/shorten",
+        "/shortener/url",
         data=json.dumps({"url": "http://example.com", "short_code": "exmpl"}),
         content_type="application/json",
     )
@@ -47,12 +47,12 @@ def test_post_shorten_valid_url_with_shortcode(client):
 def test_post_shorten_valid_url_with_existing_shortcode(client):
     # Action
     client.post(
-        "/shorten",
+        "/shortener/url",
         data=json.dumps({"url": "http://example.com", "short_code": "exmpl"}),
         content_type="application/json",
     )
     response = client.post(
-        "/shorten",
+        "/shortener/url",
         data=json.dumps({"url": "http://example2.com", "short_code": "exmpl"}),
         content_type="application/json",
     )
@@ -63,7 +63,7 @@ def test_post_shorten_valid_url_with_existing_shortcode(client):
 def test_post_shorten_invalid_url(client):
     # Action
     response = client.post(
-        "/shorten",
+        "/shortener/url",
         data=json.dumps({"url": "not_a_valid_url"}),
         content_type="application/json",
     )
@@ -74,7 +74,7 @@ def test_post_shorten_invalid_url(client):
 def test_get_redirect_valid_shortcode(client):
     # Action
     client.post(
-        "/shorten",
+        "/shortener/url",
         data=json.dumps({"url": "http://example.com", "short_code": "exmpl"}),
         content_type="application/json",
     )
