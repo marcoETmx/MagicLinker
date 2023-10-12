@@ -1,8 +1,6 @@
 from flask_restx import Namespace
 
 shortener_ns = Namespace(
-    "shortener", description="Operaciones relacionadas con el acortamiento de URLs"
+    "shortener", description="Operations related to URL shortening"
 )
-root_ns = Namespace(
-    "root", description="Operaciones relacionadas con la raíz de la API"
-)
+root_ns = Namespace("root", description="Operations related to the root of the API")

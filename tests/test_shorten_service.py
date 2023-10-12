@@ -21,10 +21,13 @@ def test_create_shortened_url(client):
     data = {"url": "http://example.com"}
     with client.application.app_context():
         # Action
-        code = create_shortened_url(data)
+        new_shortened = create_shortened_url(data)
         # Expected
-        assert len(code) == 6
-        assert URL.query.filter_by(shorten_code=code).first() is not None
+        assert len(new_shortened.shorten_code) == 6
+        assert (
+            URL.query.filter_by(shorten_code=new_shortened.shorten_code).first()
+            is not None
+        )
 
 
 def test_create_shortened_url_with_existing_short_code(client):
