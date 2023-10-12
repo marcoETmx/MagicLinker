@@ -2,7 +2,11 @@ import pytest
 
 from app import create_app, db
 from app.models.url import URL
-from app.services.shorten_service import create_shortened_url, get_original_url
+from app.services.shorten_service import (
+    create_shortened_url,
+    get_all_urls,
+    get_original_url,
+)
 
 
 @pytest.fixture
@@ -67,3 +71,18 @@ def test_get_original_url_with_nonexistent_short_code(client):
         result = get_original_url(non_existent_code)
     # Expected
     assert result is None
+
+
+def test_get_all_urls_function(client):
+    with client.application.app_context():
+        # Setup
+        url1 = {"url": "http://example1.com", "short_code": "ijkl56"}
+        url2 = {"url": "http://example2.com", "short_code": "mnop78"}
+        create_shortened_url(url1)
+        create_shortened_url(url2)
+
+        # Action
+        urls = get_all_urls()
+
+        # Expected
+        assert len(urls) == 2

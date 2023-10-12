@@ -3,9 +3,9 @@ import json
 import pytest
 
 from app import create_app, db
+from app.services.shorten_service import create_shortened_url
 
 
-# Configuración inicial
 @pytest.fixture
 def client():
     app = create_app(config_name="config.TestConfig")
@@ -90,3 +90,22 @@ def test_get_redirect_invalid_shortcode(client):
     response = client.get("/not_exist")
     # Expected
     assert response.status_code == 404
+
+
+def test_get_all_urls_returns_all_shortened_urls(client):
+    # Setup
+    url1 = {"url": "http://example1.com", "short_code": "ijkl56"}
+    url2 = {"url": "http://example2.com", "short_code": "mnop78"}
+    with client.application.app_context():
+        create_shortened_url(url1)
+        create_shortened_url(url2)
+
+    # Action
+    response = client.get("/shortener/urls")
+    data = response.get_json()
+
+    # Expected
+    assert response.status_code == 200
+    assert len(data) == 2
+    assert any(url["original_url"] == "http://example1.com" for url in data)
+    assert any(url["original_url"] == "http://example2.com" for url in data)
