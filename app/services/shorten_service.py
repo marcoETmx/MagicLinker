@@ -35,3 +35,8 @@ def get_all_urls():
 
 def get_url_by_short_code(short_code: str):
     return URL.query.filter_by(shorten_code=short_code).first()
+
+
+def increment_url_visits(url_entry: URL):
+    url_entry.usage_count += 1
+    db.session.commit()
