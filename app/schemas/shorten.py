@@ -2,6 +2,14 @@ from flask_restx import fields
 
 from app.routes.shortener import shortener_ns
 
+url_request_model = shortener_ns.model(
+    "URLRequest",
+    {
+        "url": fields.String(required=True, description="URL original"),
+        "shorten_code": fields.String(description="Short code"),
+    },
+)
+
 url_model = shortener_ns.model(
     "URL",
     {

@@ -3,9 +3,12 @@ from flask_restx import Resource
 
 from app.forms.forms import ShortenRequestForm
 from app.namespaces import shortener_ns
-from app.schemas.shorten import response_model, url_model
-from app.services.shorten_service import (create_shortened_url, get_all_urls,
-                                          get_url_by_short_code)
+from app.schemas.shorten import response_model, url_model, url_request_model
+from app.services.shorten_service import (
+    create_shortened_url,
+    get_all_urls,
+    get_url_by_short_code,
+)
 
 
 @shortener_ns.errorhandler(ValueError)
@@ -16,7 +19,7 @@ def handle_value_error(error):
 
 @shortener_ns.route("/urls")
 class URLListResource(Resource):
-    @shortener_ns.expect(url_model)
+    @shortener_ns.expect(url_request_model)
     @shortener_ns.marshal_with(response_model, code=201)
     @shortener_ns.response(201, "URL successfully shortened")
     @shortener_ns.response(400, "Validation error")
