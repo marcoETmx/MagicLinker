@@ -10,4 +10,4 @@ class TestConfig:
 
 class Config:
     BASE_URL = os.environ.get("BASE_URL") or "http://127.0.0.1:5000/"
-    SQLALCHEMY_DATABASE_URI = "sqlite:///db.sqlite"
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") or "sqlite:///db.sqlite"

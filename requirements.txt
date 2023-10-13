@@ -4,7 +4,8 @@ shortuuid==1.0.11
 Flask-WTF
 WTForms
 flask-restx
-
+serverless-wsgi
+psycopg2-binary
 
 pylint
 black

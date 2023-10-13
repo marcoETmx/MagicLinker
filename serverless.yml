@@ -1,0 +1,17 @@
+service: magic-linker
+
+provider:
+  name: aws
+  region: us-east-1
+  memorySize: 128
+  ecr:
+    images:
+      magic-linker-image: ./
+
+functions:
+  magicLinker:
+    image:
+      name: magic-linker-image
+    events:
+      - http: ANY /
+      - http: "ANY {proxy+}"
